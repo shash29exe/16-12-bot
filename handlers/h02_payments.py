@@ -32,5 +32,9 @@ async def pay(message: Message):
 
 @router.message(Command('confirm'))
 async def confirm(message: Message):
-    payment_id = message.text.split()[-1]
+    if not pending_payments:
+        await message.answer("Нет активных платежей.")
+        return
+
+    payment_id = list(pending_payments.keys())[-1]
     await confirm_payment(message.bot, payment_id)

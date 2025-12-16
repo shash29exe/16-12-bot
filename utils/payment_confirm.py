@@ -14,7 +14,7 @@ async def confirm_payment(bot: Bot, payment_id: str):
 
     if message_id:
         try:
-            await bot.edit_message_reply_markup(chat_id=user_id, message_id=message_id, reply_markup=None)
+            await bot.delete_message(user_id, message_id)
         except:
             print('Не удалось удалить кнопку.')
 
