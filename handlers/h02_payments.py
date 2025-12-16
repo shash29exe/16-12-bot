@@ -3,6 +3,7 @@ from aiogram.filters import Command
 from aiogram.types import Message
 
 from keyboards.pay_button_inline import pay_button
+from utils.payment_confirm import confirm_payment
 from utils.payments import create_payment, pending_payments
 
 router = Router()
@@ -28,3 +29,8 @@ async def pay(message: Message):
 
     pending_payments[payment_id]['message_id'] = sent_message.message_id
 
+
+@router.message(Command('confirm'))
+async def confirm(message: Message):
+    payment_id = message.text.split()[-1]
+    await confirm_payment(message.bot, payment_id)
