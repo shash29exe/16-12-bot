@@ -3,7 +3,7 @@ from aiogram.filters import Command
 from aiogram.types import Message
 
 from keyboards.pay_button_inline import pay_button
-from utils.payments import create_payment
+from utils.payments import create_payment, pending_payments
 
 router = Router()
 
@@ -23,4 +23,8 @@ async def pay(message: Message):
         return
 
     kb = pay_button(amount, confirmation_url)
-    await message.answer(f'Счёт создан. ID Платежа: {payment_id}.\nДля оплаты нажмите на кнопку 👇', reply_markup=kb, parse_mode='Markdown')
+    sent_message = await message.answer(f'Счёт создан. ID Платежа: {payment_id}.\nДля оплаты нажмите на кнопку 👇',
+                                        reply_markup=kb, parse_mode='Markdown')
+
+    pending_payments[payment_id]['message_id'] = sent_message.message_id
+
