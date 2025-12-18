@@ -1,8 +1,10 @@
 from fastapi import FastAPI, Request
 from utils.payment_confirm import confirm_payment
 from utils.payments import pending_payments
+from main import bot
 
 app = FastAPI()
+
 
 @app.post('/yookassa/webhook')
 async def yookassa_webhook(request: Request):
@@ -18,4 +20,8 @@ async def yookassa_webhook(request: Request):
     if not internal_payment_id:
         return {'status': 'no_internal_id'}
 
-    return {'status': 'ok', 'payment_id': internal_payment_id}
+    if internal_payment_id not in pending_payments:
+        return {'status': 'not_found'}
+
+    await confirm_payment(bot, internal_payment_id)
+    return {'status': 'ok'}
